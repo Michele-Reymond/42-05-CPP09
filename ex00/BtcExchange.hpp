@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
+#include <ctime>
 
 class BtcExchange {
     public:
@@ -30,18 +31,27 @@ class BtcExchange {
                 }
         };
 
-        class inputException : public std::exception {
+        class inputFileException : public std::exception {
             public:
                 virtual const char* what() const throw() {
                     return "There is a problem with the input file: check that the file exist!";	
                 }
         };
 
+        class inputDataException : public std::exception {
+            public:
+                virtual const char* what() const throw() {
+                    return "There is a problem with the input file: check that the datas are cleaned!";	
+                }
+        };
+
     private:
         std::map<std::string, float> _map;
 
+        void        _calculate_exchange(std::string date, float value);
         void        _stock_datafile(std::string file);
         void        _check_date_format(std::string date);
+        float       _check_value_format(std::string value);
 };
 
 #endif

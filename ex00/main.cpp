@@ -14,11 +14,11 @@ int main(int argc, char **argv) {
 // checker le fait qu'il y aie un argument et que ce soit un fichier OK
 // checker la databse OK
 
-// faire un check de la date plus malin qui fonctionne pour les 2 cas
+// faire un check de la date plus malin qui fonctionne pour les 2 cas OK
 
-// checker que le format des données correspond à date | value
-// checker le format des dates Year-Month-Day.
-// checker la valeur: valid value must be either a float or a positive integer between 0 and 1000
+// checker que le format des données correspond à date | value OK
+// checker le format des dates Year-Month-Day. OK
+// checker la valeur: valid value must be either a float or a positive integer between 0 and 1000 OK
 
 // display la reponses: Your program should display on the standard output the result of the value multiplied
 // by the exchange rate according to the date indicated in your database.
@@ -26,3 +26,5 @@ int main(int argc, char **argv) {
 // If the date used in the input does not exist in your DB then you
 // must use the closest date contained in your DB. Be careful to use the
 // lower date and not the upper one.
+
+// faire des erreurs plus appropriées

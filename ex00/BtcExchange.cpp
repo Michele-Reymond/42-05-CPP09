@@ -7,18 +7,26 @@ BtcExchange::BtcExchange(char *infile) {
 
     std::ifstream   input;
     std::string     line;
-    std::string     key;
+    std::string     date;
+    int             pos;
     int             i = 0;
+    float           value;
 
     input.open(infile);
     if (!input)
-        throw inputException();
+        throw inputFileException();
     while (getline(input, line)) {
         if (i != 0 || (i == 0 && isdigit(line[0]))) {
-            // _check_date_format(line);
-            // key = line.substr(0, 10);
-            // line.erase(0,10);
-            // this->_map.insert(std::pair<std::string,float>(key, atof(line.c_str())));  
+            pos = line.find(" | ");
+            if (pos != 10)
+                throw inputDataException();
+            date = line.substr(0, 10);
+            _check_date_format(date);
+            line.erase(0, 13);
+            value = _check_value_format(line);
+            if (!(value >= 0 && value <= 1000))
+                throw inputDataException();
+            _calculate_exchange(date, value);
         }
         i++;
     }
@@ -35,40 +43,59 @@ BtcExchange::~BtcExchange() {}
 void BtcExchange::_stock_datafile(std::string file) {
     std::ifstream   data;
     std::string     line;
-    std::string     key;
+    std::string     date;
+    int             pos;
     int             i = 0;
+    float           value;
 
     data.open(file.c_str());
     if (!data)
-         throw datafileException();
+        throw datafileException();
     while (getline(data, line)) {
         if (i != 0 || (i == 0 && isdigit(line[0]))) {
-            // _check_date_format(line);
-            key = line.substr(0, 10);
-            line.erase(0,10);
-            this->_map.insert(std::pair<std::string,float>(key, atof(line.c_str())));  
+            pos = line.find(",");
+            if (pos != 10)
+                throw dataformatException();
+            date = line.substr(0, 10);
+            _check_date_format(date);
+            line.erase(0, 11);
+            value = _check_value_format(line);
+            this->_map.insert(std::pair<std::string,float>(date, value));  
         }
         i++;
     }
 }
 
 void BtcExchange::_check_date_format(std::string date) {
-    int i = 0;
+    struct tm   tm;
 
-    for ( std::string::iterator it = date.begin(); it != date.end(); ++it) {
-        if ((i == 4 || i == 7) && *it != '-')
-            throw dataformatException();
-        else if (i == 10 && *it != ',')
-            throw dataformatException();
-        else if (i < 10 && i != 4 && i != 7 && !isdigit(*it))
-            throw dataformatException();
-        else if (i > 10 && !(isdigit(*it) || *it == '.'))
-            throw dataformatException();
-        i++;
-    }
+    if (!strptime(date.c_str(), "%Y-%m-%d", &tm))
+        throw dataformatException();
 }
 
+float BtcExchange::_check_value_format(std::string value) {
+    float   f;
 
+    for ( std::string::iterator it = value.begin(); it != value.end(); ++it) {
+        if (!(isdigit(*it) || *it == '.'))
+            throw dataformatException();
+    }
+    f = atof(value.c_str());
+    return (f);
+}
+
+void BtcExchange::_calculate_exchange(std::string date, float value) {
+    std::map<std::string, float>::iterator exchangeFound;
+
+    exchangeFound = _map.lower_bound(date);
+    if (exchangeFound == _map.end() || exchangeFound == _map.begin()) {
+        std::cout << "Nothing found\n";
+    } else {
+        exchangeFound--;
+        std::cout << "date: " << date << ", value: " << value << ", exchange date: " << exchangeFound->first << ", exchange value: " << exchangeFound->second << std::endl;
+        std::cout << "The result is: " << value * exchangeFound->second << std::endl;
+    }
+}
 // --------- Operator overload ------------
 
 BtcExchange &BtcExchange::operator=(const BtcExchange &instance) {
