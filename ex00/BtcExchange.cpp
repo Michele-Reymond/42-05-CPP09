@@ -3,30 +3,24 @@
 // --------- Constructor and destructor ------------
 
 BtcExchange::BtcExchange(char *infile) {
-    _stock_datafile("data.csv");
-
     std::ifstream   input;
     std::string     line;
-    std::string     date;
-    int             pos;
     int             i = 0;
-    float           value;
 
+    _stock_datafile("data.csv");
     input.open(infile);
     if (!input)
         throw inputFileException();
+    if (input.peek() == std::ifstream::traits_type::eof())
+        throw emptyFileException();
     while (getline(input, line)) {
-        if (i != 0 || (i == 0 && isdigit(line[0]))) {
-            pos = line.find(" | ");
-            if (pos != 10)
-                throw inputDataException();
-            date = line.substr(0, 10);
-            _check_date_format(date);
-            line.erase(0, 13);
-            value = _check_value_format(line);
-            if (!(value >= 0 && value <= 1000))
-                throw inputDataException();
-            _calculate_exchange(date, value);
+        if ((i > 0 && !line.empty()) || (i == 0 && isdigit(line[0]))) {
+            try {
+                _calculate_exchange(line);
+            }
+            catch (std::exception& e) {
+                std::cerr << "Error input: " << _current_date << ": " << e.what() << std::endl;
+            }
         }
         i++;
     }
@@ -68,38 +62,60 @@ void BtcExchange::_stock_datafile(std::string file) {
 
 void BtcExchange::_check_date_format(std::string date) {
     struct tm   tm;
+    int         i = 0;
 
     if (!strptime(date.c_str(), "%Y-%m-%d", &tm))
-        throw dataformatException();
+        throw dateException();
+    for ( std::string::iterator it = date.begin(); it != date.end(); ++it) {
+        if (i != 4 && i != 7 && !isdigit(*it))
+            throw dateException();
+        i++;
+    }
 }
 
 float BtcExchange::_check_value_format(std::string value) {
     float   f;
 
     for ( std::string::iterator it = value.begin(); it != value.end(); ++it) {
-        if (!(isdigit(*it) || *it == '.'))
-            throw dataformatException();
+        if (!(isdigit(*it) || *it == '.' || (it == value.begin() && *it == '-')))
+            throw valueException();
     }
     f = atof(value.c_str());
     return (f);
 }
 
-void BtcExchange::_calculate_exchange(std::string date, float value) {
+std::string BtcExchange::_calculate_exchange(std::string line) {
     std::map<std::string, float>::iterator exchangeFound;
+    int             pos;
+    float           value;
 
-    exchangeFound = _map.lower_bound(date);
+    // check format
+    _current_date = line.substr(0, 10);
+    pos = line.find(" | ");
+    if (pos != 10)
+        throw sepException();
+    line.erase(0, 13);
+    _check_date_format(_current_date);
+    value = _check_value_format(line);
+    if (value < 0)
+        throw tooLowException();
+    else if (value > 1000)
+        throw tooHighException();
+
+    // make exchange
+    exchangeFound = _map.lower_bound(_current_date);
     if (exchangeFound == _map.end() || exchangeFound == _map.begin()) {
-        std::cout << "Nothing found\n";
+        std::cout << "Nothing found in database\n";
     } else {
         exchangeFound--;
-        std::cout << "date: " << date << ", value: " << value << ", exchange date: " << exchangeFound->first << ", exchange value: " << exchangeFound->second << std::endl;
-        std::cout << "The result is: " << value * exchangeFound->second << std::endl;
+        std::cout << _current_date << " => " << value << " = " << value * exchangeFound->second << std::endl;
     }
+    return (_current_date);
 }
 // --------- Operator overload ------------
 
 BtcExchange &BtcExchange::operator=(const BtcExchange &instance) {
-    // this->_stack = instance._stack;
-    (void) instance;
+    this->_current_date = instance._current_date;
+    this->_map.insert(instance._map.begin(), instance._map.end());
     return *this;
 }

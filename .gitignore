@@ -1,7 +1,7 @@
 #custom
 *.vscode
 *settings.json
-
+*.DS_Store
 
 # Prerequisites
 *.d

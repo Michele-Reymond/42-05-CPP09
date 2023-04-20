@@ -6,8 +6,13 @@
 
 int main(int argc, char **argv) {
     if (argc != 2)
-        std::cout << "Error: You must enter one argument\n";
-    BtcExchange btc(argv[1]);
+        std::cerr << "Error: You must enter one argument\n";
+    try {
+        BtcExchange btc(argv[1]);
+    }
+    catch (std::exception& e) {
+        std::cerr << "Error with files: " << e.what() << std::endl;
+    }
     return 0;
 }
 
@@ -21,10 +26,11 @@ int main(int argc, char **argv) {
 // checker la valeur: valid value must be either a float or a positive integer between 0 and 1000 OK
 
 // display la reponses: Your program should display on the standard output the result of the value multiplied
-// by the exchange rate according to the date indicated in your database.
+// by the exchange rate according to the date indicated in your database. OK
 
 // If the date used in the input does not exist in your DB then you
 // must use the closest date contained in your DB. Be careful to use the
-// lower date and not the upper one.
+// lower date and not the upper one. OK
 
-// faire des erreurs plus appropriées
+// faire des erreurs plus appropriées OK
+// faire l'operateur de copie 

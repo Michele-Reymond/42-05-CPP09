@@ -23,7 +23,9 @@ fclean: clean
 re: fclean all
 
 run:
-	./${NAME} input.txt
+# ./${NAME} input.txt
+# ./${NAME} input_empty.txt
+	./${NAME} input_error.txt
 
 mrun: all run
 
