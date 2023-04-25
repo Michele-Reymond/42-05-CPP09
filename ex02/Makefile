@@ -1,5 +1,5 @@
 SRCS	= 	main.cpp \
-			RPN.cpp 
+			PmergeMe.cpp 
 CFLAGS	= -Wall -Werror -Wextra -std=c++98 -pedantic
 CC		= g++-12
 NAME	= PmergeMe
@@ -23,7 +23,7 @@ fclean: clean
 re: fclean all
 
 run:
-	./${NAME} 3 5 9 7 4
+	./${NAME} 5 2 56 12 4 6 7 13 14 67 3 8 15
 #	./${NAME} `jot -r 3000 1 100000 | tr '\n' ' '`
 
 # https://www.dcode.fr/notation-polonaise-inverse
