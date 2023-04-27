@@ -18,17 +18,9 @@ PmergeMe::PmergeMe(char **args, int argc) {
 
     // sort both containers
     _sort_vector(argc - 1);
-
-    
     // CONTAINER 2
+
 }
-
-//  std::pair<int, int> pair(args[i], args[i - 1]);
-
-// PmergeMe::PmergeMe(char *arg) {
-
-//         // throw operandException();
-// }
 
 PmergeMe::PmergeMe(const PmergeMe &instance) {
     *this = instance;
@@ -37,6 +29,29 @@ PmergeMe::PmergeMe(const PmergeMe &instance) {
 PmergeMe::~PmergeMe() { delete _tab; }
 
 // --------- Member functions ------------
+
+void    PmergeMe::print_pairs() {
+    if (_vector.empty())
+        std::cout << "vector is empty!" << std::endl;
+    else {
+        std::cout << "ici!" << std::endl;
+        for (std::vector< std::pair<int, int> >::iterator it = _vector.begin(); it != _vector.end(); it++) {
+            std::cout << "{" << (*it).first << ", " << (*it).second << "} ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void    PmergeMe::print_sorted_vector() {
+    if (_sortedVector.empty())
+        std::cout << "vector is empty!" << std::endl;
+    else {
+        for (std::vector< int >::iterator it = _sortedVector.begin(); it != _sortedVector.end(); it++) {
+            std::cout << (*it) << ", ";
+        }
+        std::cout << std::endl;
+    }
+}
 
 void    PmergeMe::_check_arg(char *arg) {
     long    l_arg;
@@ -72,6 +87,33 @@ void PmergeMe::_sort_vector(int argc) {
         std::cout << "{" << (*it).first << ", " << (*it).second << "} ";
     }
     std::cout << std::endl;
+
+    // sort first element in pairs
+    for (std::vector< std::pair<int, int> >::iterator it = _vector.begin() + 1; it != _vector.end(); it++) {
+        std::vector< std::pair<int, int> >::iterator actual = it;
+        std::vector< std::pair<int, int> >::iterator prev = it - 1;
+        while ((*actual).first < (*prev).first) {
+            std::swap(*actual, *prev);
+            if (prev != _vector.begin()) {
+                actual = prev;
+                prev = actual - 1;
+            }
+        }
+    }
+
+    // push sorted first elem in def vector
+    for (std::vector< std::pair<int, int> >::iterator it = _vector.begin(); it != _vector.end(); it++) {
+        if ((*it).first != -1)
+            _sortedVector.push_back((*it).first);
+    }
+
+    // insert second elem in def vector
+    for (std::vector< std::pair<int, int> >::iterator it = _vector.begin(); it != _vector.end(); it++) {
+        std::vector<int>::iterator low;
+
+        low = std::lower_bound (_sortedVector.begin(), _sortedVector.end(), (*it).second);
+        _sortedVector.insert(low, (*it).second);
+    }
 }
 
 // --------- Operator overload ------------

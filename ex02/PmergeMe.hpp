@@ -7,6 +7,7 @@
 #include <limits>
 #include <utility>
 #include <cstdlib>
+#include <algorithm>
 
 class PmergeMe {
     public:
@@ -16,6 +17,9 @@ class PmergeMe {
         virtual ~PmergeMe();
 
         PmergeMe &operator=(const PmergeMe &instance);
+
+        void    print_pairs();
+        void    print_sorted_vector();
 
         class limitException : public std::exception {
             public:
@@ -46,8 +50,9 @@ class PmergeMe {
         };
 
     private:
-        std::vector<std::pair<int, int> >    _vector;
-        int                                  *_tab;
+        std::vector<std::pair<int, int> >       _vector;
+        std::vector<int>                        _sortedVector;
+        int                                     *_tab;
         // CONTAINER 2
 
         void    _check_arg(char *arg);
