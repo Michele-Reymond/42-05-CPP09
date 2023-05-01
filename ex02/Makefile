@@ -23,7 +23,7 @@ fclean: clean
 re: fclean all
 
 run:
-	./${NAME} 5 2 56 12 4 6 7 13 14 67 3 8 15
+	./${NAME} 5 2 56 12 4 6 7 13 14 67 3 8 15 2 2
 #	./${NAME} `jot -r 3000 1 100000 | tr '\n' ' '`
 
 # https://www.dcode.fr/notation-polonaise-inverse

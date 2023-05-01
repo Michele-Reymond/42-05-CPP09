@@ -8,11 +8,13 @@
 #include <utility>
 #include <cstdlib>
 #include <algorithm>
+#include <ctime>
+
+#define DOUBLES 1
 
 class PmergeMe {
     public:
-        PmergeMe(char **args, int argc); // constructeur plusieurs args
-        PmergeMe(char *arg); // constructeur string d'args
+        PmergeMe(char **args, int argc);
         PmergeMe(const PmergeMe& instance);
         virtual ~PmergeMe();
 
@@ -20,6 +22,10 @@ class PmergeMe {
 
         void    print_pairs();
         void    print_sorted_vector();
+        void    print_sorted_list();
+        void    print_unsorted();
+        void    print_vtime();
+        void    print_ltime();
 
         class limitException : public std::exception {
             public:
@@ -52,11 +58,18 @@ class PmergeMe {
     private:
         std::vector<std::pair<int, int> >       _vector;
         std::vector<int>                        _sortedVector;
+        std::clock_t                            _vStart;
+        double                                  _vTime;
+        std::list<std::pair<int, int> >         _list;
+        std::list<int>                          _sortedList;
+        std::clock_t                            _lStart;
+        double                                  _lTime;
         int                                     *_tab;
-        // CONTAINER 2
+        int                                     _argc;
 
         void    _check_arg(char *arg);
-        void    _sort_vector(int argc);
+        void    _sort_vector();
+        void    _sort_list();
 };
 
 #endif

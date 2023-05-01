@@ -1,9 +1,6 @@
 #include <iostream>
 #include "RPN.hpp"
 
-#define COLOR_RESET     "\x1b[0m"
-#define COLOR           "\x1b[2m"
-
 int main(int argc, char **argv) {
     if (argc != 2)
         std::cout << "Error: You must enter only one argument\n";
