@@ -7,12 +7,17 @@ BtcExchange::BtcExchange(char *infile) {
     std::string     line;
     int             i = 0;
 
+    // stock value in container
     _stock_datafile("data.csv");
+
+    // open and check file
     input.open(infile);
     if (!input)
         throw inputFileException();
     if (input.peek() == std::ifstream::traits_type::eof())
         throw emptyFileException();
+
+    // calculate input entries
     while (getline(input, line)) {
         if ((i > 0 && !line.empty()) || (i == 0 && isdigit(line[0]))) {
             try {
@@ -103,12 +108,18 @@ std::string BtcExchange::_calculate_exchange(std::string line) {
         throw tooHighException();
 
     // make exchange
-    exchangeFound = _map.lower_bound(_current_date);
-    if (exchangeFound == _map.end() || exchangeFound == _map.begin()) {
-        std::cout << "Nothing found in database\n";
-    } else {
-        exchangeFound--;
+    if (_map.find(_current_date) != _map.end()) {
+        exchangeFound = _map.find(_current_date);
         std::cout << _current_date << " => " << value << " = " << value * exchangeFound->second << std::endl;
+    }
+    else {
+        exchangeFound = _map.lower_bound(_current_date);
+        if (exchangeFound == _map.end() || exchangeFound == _map.begin()) {
+            std::cout << "Error: " << _current_date <<  ": Nothing found in database\n";
+        } else {
+            exchangeFound--;
+            std::cout << _current_date << " => " << value << " = " << value * exchangeFound->second << std::endl;
+        }
     }
     return (_current_date);
 }
