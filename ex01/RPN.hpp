@@ -41,7 +41,7 @@ class RPN {
         class operandException : public std::exception {
             public:
                 virtual const char* what() const throw() {
-                    return "There is no operands in the operation";
+                    return "Missing operands in the operation";
                 }
         };
 

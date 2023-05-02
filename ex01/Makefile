@@ -46,7 +46,7 @@ run:
 #	./${NAME} "82 /* 2 + 4 * 2 +"
 #	./${NAME} "3 4 1 2 + × +"
 #	./${NAME} "* 1 2 + 4 × 3 +"
-#	./${NAME} 89 * 9 
+#	./${NAME} "89 * 9"
 #	./${NAME} "(1 + 1)" 
 
 # https://www.dcode.fr/notation-polonaise-inverse
