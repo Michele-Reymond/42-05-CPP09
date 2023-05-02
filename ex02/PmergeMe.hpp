@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <ctime>
 
-#define DOUBLES 1
+#define DOUBLES 0
 
 class PmergeMe {
     public:
